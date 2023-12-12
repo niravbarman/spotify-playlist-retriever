@@ -62,28 +62,22 @@ function App() {
 
   const getPlaylists = async (e) => {
     //e.preventDefault()
-    const userId = 'niravbarman';
-    const url = `https://api.spotify.com/v1/users/${userId}/playlists?limit=50`;
-    const {data} = await axios.get(url, {
+    const {data} = await axios.get("https://api.spotify.com/v1/me/playlists", {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
     })
 
-    const playlists = data.items
-    
-    setPlaylists(playlists.filter((playlist) => {
-      return playlist.owner.id === userId}))
+    console.log(data)
+    setPlaylists(data.items)
   }
 
   const renderPlaylists = () => {
     return playlists.map(playlist => (
-      <a href={playlist.external_urls["spotify"]}>
         <div key={playlist.id}>
             {playlist.name}
             {playlist.images.length ? <img width={"100%"} src={playlist.images[0].url} alt=""/> : <div>No Image</div>}
         </div>
-      </a>
     ))
   }
 
@@ -91,17 +85,17 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Playlist Curator: Spotify</h1>
-          {!token ?
-            <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPES_URL_PARAM}`}>Login to Spotify</a>
-            : <button onClick={logout}>Logout</button>
-          }
+        {!token ?
+          <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPES_URL_PARAM}`}>Login to Spotify</a>
+          : <button onClick={logout}>Logout</button>
+        }
 
-          {token ?
-            <button onClick={getPlaylists}>Get Playlists</button>
-            : <h2>Please Login</h2>
-          }
+        {token ?
+          <button onClick={getPlaylists}>Get Playlists</button>
+          : <h2>Please Login</h2>
+        }
 
-          {renderPlaylists()}
+        {renderPlaylists()}
       </header>
     </div>
   );
