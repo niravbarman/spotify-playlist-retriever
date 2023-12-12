@@ -61,23 +61,27 @@ function App() {
   }
 
   const getPlaylists = async (e) => {
-    //e.preventDefault()
-    const {data} = await axios.get("https://api.spotify.com/v1/me/playlists", {
+    const userID = 'niravbarman'
+    const url = `https://api.spotify.com/v1/me/playlists?limit=50`
+    const {data} = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${token}`
       },
     })
 
-    console.log(data)
-    setPlaylists(data.items)
+    const playlists = data.items
+    setPlaylists(playlists.filter((playlist) => {
+      return playlist.owner.id === userID}))
   }
 
   const renderPlaylists = () => {
     return playlists.map(playlist => (
+      <a href={playlist.external_urls['spotify']}>
         <div key={playlist.id}>
             {playlist.name}
             {playlist.images.length ? <img width={"100%"} src={playlist.images[0].url} alt=""/> : <div>No Image</div>}
         </div>
+      </a>
     ))
   }
 
